@@ -37,16 +37,16 @@ def get_challenges(user1, user2, target_category=None):
     soup_user1 = BeautifulSoup(page_user1, 'html.parser')
     links_user1 = soup_user1.find_all("a", {"class": ["vert", "rouge"]})
     stats_user1 = soup_user1.find_all("h3")
-    rank_user1 = str(stats_user1[4]).strip("</h3>").split(" ")[-1]
-    score_user1 = str(stats_user1[5]).strip("</h3>").split(" ")[-1]
+    rank_user1 = str(stats_user1[4])[:-5].split(" ")[-1]
+    score_user1 = str(stats_user1[5])[:-5].split(" ")[-1]
     print(f"[*] {user1} is ranked top {COLOR_YELLOW}{rank_user1}{COLOR_RESET} with {COLOR_PURPLE}{score_user1}{COLOR_RESET} points")
 
     page_user2 = get_page(user2)
     soup_user2 = BeautifulSoup(page_user2, 'html.parser')
     links_user2 = soup_user2.find_all("a", {"class": ["vert", "rouge"]})
     stats_user2 = soup_user2.find_all("h3")
-    rank_user2 = str(stats_user2[4]).strip("</h3>").split(" ")[-1]
-    score_user2 = str(stats_user2[5]).strip("</h3>").split(" ")[-1]
+    rank_user2 = str(stats_user2[4])[:-5].split(" ")[-1]
+    score_user2 = str(stats_user2[5])[:-5].split(" ")[-1]
     print(f"[*] {user2} is ranked top {COLOR_YELLOW}{rank_user2}{COLOR_RESET} with {COLOR_PURPLE}{score_user2}{COLOR_RESET} points\n")
 
     for i, link in enumerate(links_user1):
