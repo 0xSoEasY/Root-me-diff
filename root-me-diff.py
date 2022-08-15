@@ -1,14 +1,23 @@
+#!/usr/bin/python3
+
+import sys
 import requests
 from bs4 import BeautifulSoup
-from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
-################################## ARGUMENTS ##################################
+################################## USAGE MESSAGE ##################################
 
-parser = ArgumentParser(description="Find the validated challenges that differ from a user to another", formatter_class=ArgumentDefaultsHelpFormatter)
-parser.add_argument('--user1',      help="The complete name of the first user (in profile URL)")
-parser.add_argument('--user2',      help="The complete name of the second user (in profile URL)")
-parser.add_argument('--category',   help="Specify a challenge category to filter")
-args = parser.parse_args()
+usage = f"""Usage: [python3] {sys.argv[0]} user1 user2 [category]
+
+--> A username must be written as it is in the URL of its profile
+Github: https://github.com/0xSoEasY/Root-me-diff"""
+
+################################## COLORS ##################################
+
+COLOR_RESET = "\x1b[0m"
+COLOR_RED   = "\x1b[1;31m"
+COLOR_BLUE  = "\x1b[1;32m"
+COLOR_YELLOW = "\x1b[1;33m"
+COLOR_PURPLE = "\x1b[1;35m"
 
 ################################## FUNCTIONS ##################################
 
@@ -27,10 +36,18 @@ def get_challenges(user1, user2, target_category=None):
     page_user1 = get_page(user1)
     soup_user1 = BeautifulSoup(page_user1, 'html.parser')
     links_user1 = soup_user1.find_all("a", {"class": ["vert", "rouge"]})
+    stats_user1 = soup_user1.find_all("h3")
+    rank_user1 = str(stats_user1[4]).strip("</h3>").split(" ")[-1]
+    score_user1 = str(stats_user1[5]).strip("</h3>").split(" ")[-1]
+    print(f"[*] {user1} is ranked top {COLOR_YELLOW}{rank_user1}{COLOR_RESET} with {COLOR_PURPLE}{score_user1}{COLOR_RESET} points")
 
     page_user2 = get_page(user2)
     soup_user2 = BeautifulSoup(page_user2, 'html.parser')
     links_user2 = soup_user2.find_all("a", {"class": ["vert", "rouge"]})
+    stats_user2 = soup_user2.find_all("h3")
+    rank_user2 = str(stats_user2[4]).strip("</h3>").split(" ")[-1]
+    score_user2 = str(stats_user2[5]).strip("</h3>").split(" ")[-1]
+    print(f"[*] {user2} is ranked top {COLOR_YELLOW}{rank_user2}{COLOR_RESET} with {COLOR_PURPLE}{score_user2}{COLOR_RESET} points\n")
 
     for i, link in enumerate(links_user1):
         parsed = str(link).split('"')
@@ -53,27 +70,31 @@ def get_challenges(user1, user2, target_category=None):
 
 
 def print_diff(user1, user2, challenges):
-    print(f"[+] Challenges that \x1b[1;32m{user1} flagged\x1b[0m and \x1b[1;31mnot {user2}\x1b[0m:")
+    print(f"[+] Challenges that {COLOR_BLUE}{user1} flagged{COLOR_RESET} and {COLOR_RED}not {user2}{COLOR_RESET}:")
     for challenge in challenges:
         if challenge[3] and not challenge[4]:
             print(f"- [{challenge[0]}]  {challenge[1]}  ({challenge[2]} pts)")
     
-    print(f"\n[+] Challenges that \x1b[1;32m{user2} flagged\x1b[0m and \x1b[1;31mnot {user1}\x1b[0m:")
+    print(f"\n[+] Challenges that {COLOR_BLUE}{user2} flagged{COLOR_RESET} and {COLOR_RED}not {user1}{COLOR_RESET}:")
     for challenge in challenges:
         if challenge[4] and not challenge[3]:
             print(f"- [{challenge[0]}]  {challenge[1]}  ({challenge[2]} pts)")
 
-################################## MAIN METHOD ##################################
-
-def main():
-    if args.user1 and args.user2:
-        challenges = get_challenges(args.user1, args.user2, args.category)
-        print_diff(args.user1, args.user2, challenges)
-
-    else:
-        print()
-        parser.print_help()
-        print()
+################################## MAIN METHOD & ARGUMENTS ##################################
 
 if __name__ == '__main__':
-    main()
+	if len(sys.argv) > 2:
+
+		if len(sys.argv) == 3:
+			challenges = get_challenges(sys.argv[1], sys.argv[2])
+		elif len(sys.argv) == 4:
+			challenges = get_challenges(sys.argv[1], sys.argv[2], sys.argv[3])
+		else:
+			print(usage)
+			exit(1)
+
+		print_diff(sys.argv[1], sys.argv[2], challenges)
+
+	else:
+		print(usage)
+		exit(1)
