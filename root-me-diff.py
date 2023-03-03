@@ -6,10 +6,21 @@ from bs4 import BeautifulSoup
 
 ################################## USAGE MESSAGE ##################################
 
-usage = f"""Usage: [python3] {sys.argv[0]} user1 user2 [category]
+usage = f"""
+Usage: [python3] {sys.argv[0]} user1 user2 [category]
 
---> A username must be written as it is in the URL of its profile
-Github: https://github.com/0xSoEasY/Root-me-diff"""
+[+] Remainder of the different categories:
+- App-Script    | - Realist
+- App-System    | - Network
+- Cracking      | - Steganography
+- Cryptanalysis | - Web-Client
+- Forensic      | - Web-Server
+- Programming
+
+[!]  A username must be written as it is in the URL of its profile
+
+--> Github: https://github.com/0xSoEasY/Root-me-diff
+"""
 
 ################################## COLORS ##################################
 
